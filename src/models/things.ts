@@ -45,7 +45,7 @@ class Things extends EventEmitter {
     this.websockets = [];
   }
 
-  setRouter(router: Router): void {
+  setRouter (router: Router): void {
     this.router = router;
   }
 
@@ -55,7 +55,7 @@ class Things extends EventEmitter {
    *
    * @return {Promise} which resolves with a Map of Thing objects.
    */
-  getThings(): Promise<Map<string, Thing>> {
+  getThings (): Promise<Map<string, Thing>> {
     if (this.things.size > 0) {
       return Promise.resolve(this.things);
     }
@@ -93,7 +93,7 @@ class Things extends EventEmitter {
    *
    * @return {Promise<Array>} which resolves with a list of all thing titles.
    */
-  getThingTitles(): Promise<string[]> {
+  getThingTitles (): Promise<string[]> {
     return this.getThings().then((things) => {
       return Array.from(things.values()).map((t) => t.getTitle());
     });
@@ -106,7 +106,7 @@ class Things extends EventEmitter {
    * @param {Boolean} reqSecure whether or not the request is secure, i.e. TLS
    * @return {Promise} which resolves with a list of Thing Descriptions.
    */
-  getThingDescriptions(reqHost?: string, reqSecure?: boolean): Promise<ThingDescription[]> {
+  getThingDescriptions (reqHost?: string, reqSecure?: boolean): Promise<ThingDescription[]> {
     return this.getThings().then((things) => {
       const descriptions = [];
       for (const thing of things.values()) {
@@ -122,7 +122,7 @@ class Things extends EventEmitter {
    * {Array} hrefs hrefs of the list of Things to get.
    * @return {Promise} A promise which resolves with a list of Things.
    */
-  getListThings(hrefs: string[]): Promise<Thing[]> {
+  getListThings (hrefs: string[]): Promise<Thing[]> {
     return this.getThings().then((things) => {
       const listThings: Thing[] = [];
       for (const href of hrefs) {
@@ -145,7 +145,7 @@ class Things extends EventEmitter {
    * @param {Boolean} reqSecure whether or not the request is secure, i.e. TLS.
    * @return {Promise} which resolves with a list of Thing Descriptions.
    */
-  getListThingDescriptions(
+  getListThingDescriptions (
     hrefs: string[],
     reqHost?: string,
     reqSecure?: boolean
@@ -165,7 +165,7 @@ class Things extends EventEmitter {
    *
    * @returns Promise A promise which resolves with a list of Things.
    */
-  getNewThings(): Promise<DeviceSchema[]> {
+  getNewThings (): Promise<DeviceSchema[]> {
     // Get a map of things in the database
     return this.getThings().then((storedThings) => {
       // Get a list of things connected to adapters
@@ -177,9 +177,8 @@ class Things extends EventEmitter {
           if (connectedThing.properties) {
             for (const propertyName in connectedThing.properties) {
               const property = connectedThing.properties[propertyName];
-              property.href = `${Constants.THINGS_PATH}/${encodeURIComponent(connectedThing.id)}${
-                Constants.PROPERTIES_PATH
-              }/${encodeURIComponent(propertyName)}`;
+              property.href = `${Constants.THINGS_PATH}/${encodeURIComponent(connectedThing.id)}${Constants.PROPERTIES_PATH
+                }/${encodeURIComponent(propertyName)}`;
             }
           }
           newThings.push(connectedThing);
@@ -195,7 +194,7 @@ class Things extends EventEmitter {
    * @param String id ID to give Thing.
    * @param Object description Thing description.
    */
-  async createThing(id: string, description: ThingDescription): Promise<ThingDescription> {
+  async createThing (id: string, description: ThingDescription): Promise<ThingDescription> {
     const thing = new Thing(id, description, this.router!);
     thing.setConnected(true);
 
@@ -211,7 +210,7 @@ class Things extends EventEmitter {
    *
    * @param {Object} newThing - New Thing description
    */
-  handleNewThing(newThing: ThingDescription): void {
+  handleNewThing (newThing: ThingDescription): void {
     this.getThing(newThing.id)
       .then((thing) => {
         thing?.setConnected(true);
@@ -230,13 +229,13 @@ class Things extends EventEmitter {
    *
    * @param {Object} thing - Thing which was removed
    */
-  handleThingRemoved(thing: DeviceSchema): void {
+  handleThingRemoved (thing: DeviceSchema): void {
     this.getThing(thing.id)
       .then((thing) => {
         thing?.setConnected(false);
       })
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      .catch(() => {});
+      .catch(() => { });
   }
 
   /**
@@ -245,13 +244,13 @@ class Things extends EventEmitter {
    * @param {string} thingId - ID of thing
    * @param {boolean} connected - New connectivity state
    */
-  handleConnected(thingId: string, connected: boolean): void {
+  handleConnected (thingId: string, connected: boolean): void {
     this.getThing(thingId)
       .then((thing) => {
         thing?.setConnected(connected);
       })
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      .catch(() => {});
+      .catch(() => { });
   }
 
   /**
@@ -259,7 +258,7 @@ class Things extends EventEmitter {
    *
    * @param {Websocket} websocket A websocket instance.
    */
-  registerWebsocket(websocket: WebSocket): void {
+  registerWebsocket (websocket: WebSocket): void {
     this.websockets.push(websocket);
     websocket.on('close', () => {
       const index = this.websockets.indexOf(websocket);
@@ -273,7 +272,7 @@ class Things extends EventEmitter {
    * @param {String} id The ID of the Thing to get.
    * @return {Promise<Thing>} A Thing object.
    */
-  getThing(id: string): Promise<Thing> {
+  getThing (id: string): Promise<Thing> {
     return this.getThings().then((things) => {
       const thing = things.get(id);
       if (thing) {
@@ -290,7 +289,7 @@ class Things extends EventEmitter {
    * @param {String} title The title of the Thing to get.
    * @return {Promise<Thing>} A Thing object.
    */
-  getThingByTitle(title: string): Promise<Thing | null> {
+  getThingByTitle (title: string): Promise<Thing | null> {
     title = title.toLowerCase();
 
     return this.getThings()
@@ -317,7 +316,7 @@ class Things extends EventEmitter {
    * @param {Boolean} reqSecure whether or not the request is secure, i.e. TLS
    * @return {Promise<ThingDescription>} A Thing description object.
    */
-  getThingDescription(
+  getThingDescription (
     id: string,
     reqHost?: string,
     reqSecure?: boolean
@@ -334,7 +333,7 @@ class Things extends EventEmitter {
    * @param {number} index The new layout index.
    * @return {Promise} A promise which resolves with the description set.
    */
-  async setThingLayoutIndex(thing: Thing, index: number, emitModified = true): Promise<void> {
+  async setThingLayoutIndex (thing: Thing, index: number, emitModified = true): Promise<void> {
     const things = Array.from(this.things.values()).filter((t) => t.getGroup() == thing.getGroup());
 
     index = Math.min(things.length - 1, Math.max(0, index));
@@ -364,7 +363,7 @@ class Things extends EventEmitter {
    * @param {string} group_id ID of the group
    * @return {Promise} A promise which resolves with the description set.
    */
-  async setThingGroup(thing: Thing, group_id: string | null, emitModified = true): Promise<void> {
+  async setThingGroup (thing: Thing, group_id: string | null, emitModified = true): Promise<void> {
     if (!group_id) {
       group_id = null;
     }
@@ -388,7 +387,7 @@ class Things extends EventEmitter {
    * @param {number} index The new layout index.
    * @return {Promise} A promise which resolves with the description set.
    */
-  async setThingGroupAndLayoutIndex(
+  async setThingGroupAndLayoutIndex (
     thing: Thing,
     group_id: string | null,
     index: number
@@ -406,7 +405,7 @@ class Things extends EventEmitter {
    *
    * @param String id ID to give Thing.
    */
-  removeThing(id: string): Promise<void> {
+  removeThing (id: string): Promise<void> {
     this.router!.removeProxyServer(id);
     return Database.removeThing(id).then(() => {
       const thing = this.things.get(id);
@@ -436,7 +435,7 @@ class Things extends EventEmitter {
    * @param {String} propertyName
    * @return {Promise<Any>} resolves to value of property
    */
-  async getThingProperty(thingId: string, propertyName: string): Promise<Any> {
+  async getThingProperty (thingId: string, propertyName: string): Promise<Any> {
     try {
       return await AddonManager.getProperty(thingId, propertyName);
     } catch (e) {
@@ -453,7 +452,7 @@ class Things extends EventEmitter {
    * @param {Any} value
    * @return {Promise<Any>} resolves to new value
    */
-  async setThingProperty(thingId: string, propertyName: string, value: Any): Promise<Any> {
+  async setThingProperty (thingId: string, propertyName: string, value: Any): Promise<Any> {
     let thing: ThingDescription;
     try {
       thing = await this.getThingDescription(thingId, 'localhost', true);
@@ -492,7 +491,7 @@ class Things extends EventEmitter {
     }
   }
 
-  clearState(): void {
+  clearState (): void {
     this.websockets = [];
     this.things = new Map();
     this.removeAllListeners();

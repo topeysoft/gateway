@@ -86,15 +86,15 @@ export class AddonManager extends EventEmitter {
   // Addon, Device, ... with the addon.
   // Although the values aren't used, the getters need to be present
   // because they are called as part of the initialization process.
-  getGatewayVersion(): string {
+  getGatewayVersion (): string {
     return '';
   }
 
-  getUserProfile(): Record<string, unknown> {
+  getUserProfile (): Record<string, unknown> {
     return {};
   }
 
-  getPreferences(): Record<string, unknown> {
+  getPreferences (): Record<string, unknown> {
     return {};
   }
 
@@ -102,7 +102,7 @@ export class AddonManager extends EventEmitter {
    * Adds an adapter to the collection of adapters managed by AddonManager.
    * This function is typically called when loading add-ons.
    */
-  addAdapter(adapter: Adapter): void {
+  addAdapter (adapter: Adapter): void {
     if (!adapter.getName()) {
       adapter.setName(adapter.constructor.name);
     }
@@ -125,7 +125,7 @@ export class AddonManager extends EventEmitter {
     }
   }
 
-  addNotifier(notifier: Notifier): void {
+  addNotifier (notifier: Notifier): void {
     if (!notifier.getName()) {
       notifier.setName(notifier.constructor.name);
     }
@@ -143,7 +143,7 @@ export class AddonManager extends EventEmitter {
     this.emit(Constants.NOTIFIER_ADDED, notifier);
   }
 
-  addAPIHandler(handler: APIHandler): void {
+  addAPIHandler (handler: APIHandler): void {
     this.apiHandlers.set(handler.getPackageName(), handler);
 
     /**
@@ -164,7 +164,7 @@ export class AddonManager extends EventEmitter {
    *
    * @returns A promise when the pairing process is complete.
    */
-  addNewThing(pairingTimeout: number): Promise<void> {
+  addNewThing (pairingTimeout: number): Promise<void> {
     const deferredAdd = new Deferred<void, unknown>();
 
     if (this.deferredAdd) {
@@ -190,7 +190,7 @@ export class AddonManager extends EventEmitter {
    *
    * Cancels a previous addNewThing request.
    */
-  cancelAddNewThing(): void {
+  cancelAddNewThing (): void {
     const deferredAdd = this.deferredAdd;
 
     if (this.pairingTimeout) {
@@ -212,7 +212,7 @@ export class AddonManager extends EventEmitter {
    *
    * Cancels a previous removeThing request.
    */
-  cancelRemoveThing(thingId: string): void {
+  cancelRemoveThing (thingId: string): void {
     const timeout = this.removalTimeouts.get(thingId);
     if (timeout) {
       clearTimeout(timeout);
@@ -237,7 +237,7 @@ export class AddonManager extends EventEmitter {
    * @method getAdapter
    * @returns Returns the adapter with the indicated id.
    */
-  getAdapter(adapterId: string): Adapter | undefined {
+  getAdapter (adapterId: string): Adapter | undefined {
     return this.adapters.get(adapterId);
   }
 
@@ -246,7 +246,7 @@ export class AddonManager extends EventEmitter {
    * @returns Returns a Map of the loaded adapters. The dictionary
    *          key corresponds to the adapter id.
    */
-  getAdapters(): Map<string, Adapter> {
+  getAdapters (): Map<string, Adapter> {
     return this.adapters;
   }
 
@@ -255,7 +255,7 @@ export class AddonManager extends EventEmitter {
    * @returns Returns a Map of the loaded notifiers. The dictionary
    *          key corresponds to the notifier id.
    */
-  getNotifiers(): Map<string, Notifier> {
+  getNotifiers (): Map<string, Notifier> {
     return this.notifiers;
   }
 
@@ -263,7 +263,7 @@ export class AddonManager extends EventEmitter {
    * @method getNotifier
    * @returns Returns the notifier with the indicated id.
    */
-  getNotifier(notifierId: string): Notifier | undefined {
+  getNotifier (notifierId: string): Notifier | undefined {
     return this.notifiers.get(notifierId);
   }
 
@@ -272,7 +272,7 @@ export class AddonManager extends EventEmitter {
    * @returns Returns a Map of the loaded API handlers. The dictionary
    *          key corresponds to the package ID.
    */
-  getAPIHandlers(): Map<string, APIHandler> {
+  getAPIHandlers (): Map<string, APIHandler> {
     return this.apiHandlers;
   }
 
@@ -280,7 +280,7 @@ export class AddonManager extends EventEmitter {
    * @method getAPIHandler
    * @returns Returns the API handler with the given package ID.
    */
-  getAPIHandler(packageId: string): APIHandler | undefined {
+  getAPIHandler (packageId: string): APIHandler | undefined {
     return this.apiHandlers.get(packageId);
   }
 
@@ -289,7 +289,7 @@ export class AddonManager extends EventEmitter {
    * @returns Returns a Map of the loaded extensions. The dictionary
    *          key corresponds to the extension ID.
    */
-  getExtensions(): Record<string, Extension> {
+  getExtensions (): Record<string, Extension> {
     return this.extensions;
   }
 
@@ -297,7 +297,7 @@ export class AddonManager extends EventEmitter {
    * @method getDevice
    * @returns Returns the device with the indicated id.
    */
-  getDevice(id: string): Device {
+  getDevice (id: string): Device {
     return this.devices[id];
   }
 
@@ -306,7 +306,7 @@ export class AddonManager extends EventEmitter {
    * @returns Returns an dictionary of all of the known devices.
    *          The dictionary key corresponds to the device id.
    */
-  getDevices(): Record<string, Device> {
+  getDevices (): Record<string, Device> {
     return this.devices;
   }
 
@@ -314,7 +314,7 @@ export class AddonManager extends EventEmitter {
    * @method getOutlet
    * @returns Returns the outlet with the indicated id.
    */
-  getOutlet(id: string): Outlet {
+  getOutlet (id: string): Outlet {
     return this.outlets[id];
   }
 
@@ -323,7 +323,7 @@ export class AddonManager extends EventEmitter {
    * @returns Returns an dictionary of all of the known outlets.
    *          The dictionary key corresponds to the outlet id.
    */
-  getOutlets(): Record<string, Outlet> {
+  getOutlets (): Record<string, Outlet> {
     return this.outlets;
   }
 
@@ -332,7 +332,7 @@ export class AddonManager extends EventEmitter {
    *
    * Returns a previously registered plugin.
    */
-  getPlugin(pluginId: string): Plugin | undefined {
+  getPlugin (pluginId: string): Plugin | undefined {
     if (this.pluginServer) {
       return this.pluginServer.getPlugin(pluginId);
     }
@@ -346,7 +346,7 @@ export class AddonManager extends EventEmitter {
    * @returns Returns a dictionary of all of the known things.
    *          The dictionary key corresponds to the device id.
    */
-  getThings(): DeviceSchema[] {
+  getThings (): DeviceSchema[] {
     const things = [];
     for (const thingId in this.devices) {
       const thing = this.getThing(thingId);
@@ -361,7 +361,7 @@ export class AddonManager extends EventEmitter {
    * @method getThing
    * @returns Returns the thing with the indicated id.
    */
-  getThing(thingId: string): DeviceSchema | undefined {
+  getThing (thingId: string): DeviceSchema | undefined {
     return this.getDevice(thingId)?.asThing();
   }
 
@@ -370,7 +370,7 @@ export class AddonManager extends EventEmitter {
    * @returns Retrieves all of the properties associated with the thing
    *          identified by `thingId`.
    */
-  getPropertyDescriptions(thingId: string): Record<string, unknown> | undefined {
+  getPropertyDescriptions (thingId: string): Record<string, unknown> | undefined {
     return this.getDevice(thingId)?.getPropertyDescriptions();
   }
 
@@ -379,7 +379,7 @@ export class AddonManager extends EventEmitter {
    * @returns a promise which resolves to the retrieved value of `propertyName`
    *          from the thing identified by `thingId`.
    */
-  getProperty(thingId: string, propertyName: string): Promise<Any> {
+  getProperty (thingId: string, propertyName: string): Promise<Any> {
     const device = this.getDevice(thingId);
     if (device) {
       return device.getProperty(propertyName).then((value) => <Any>value);
@@ -393,7 +393,7 @@ export class AddonManager extends EventEmitter {
    * @returns a promise which resolves to the updated value of `propertyName`
    *          for the thing identified by `thingId`.
    */
-  setProperty(thingId: string, propertyName: string, value: Any): Promise<Any> {
+  setProperty (thingId: string, propertyName: string, value: Any): Promise<Any> {
     const device = this.getDevice(thingId);
     if (device) {
       return device.setProperty(propertyName, value);
@@ -406,7 +406,7 @@ export class AddonManager extends EventEmitter {
    * @method notify
    * @returns a promise which resolves when the outlet has been notified.
    */
-  notify(outletId: string, title: string, message: string, level: Level): Promise<void> {
+  notify (outletId: string, title: string, message: string, level: Level): Promise<void> {
     const outlet = this.getOutlet(outletId);
     if (outlet) {
       return outlet.notify(title, message, level);
@@ -419,7 +419,7 @@ export class AddonManager extends EventEmitter {
    * @method setPin
    * @returns a promise which resolves when the PIN has been set.
    */
-  setPin(thingId: string, pin: string): Promise<DeviceSchema> {
+  setPin (thingId: string, pin: string): Promise<DeviceSchema> {
     const device = this.getDevice(thingId);
     if (device) {
       return <Promise<DeviceSchema>>(<unknown>device.getAdapter().setPin(thingId, pin));
@@ -432,7 +432,7 @@ export class AddonManager extends EventEmitter {
    * @method setCredentials
    * @returns a promise which resolves when the credentials have been set.
    */
-  setCredentials(thingId: string, username: string, password: string): Promise<DeviceSchema> {
+  setCredentials (thingId: string, username: string, password: string): Promise<DeviceSchema> {
     const device = this.getDevice(thingId);
     if (device) {
       return <Promise<DeviceSchema>>(
@@ -447,7 +447,7 @@ export class AddonManager extends EventEmitter {
    * @method requestAction
    * @returns a promise which resolves when the action has been requested.
    */
-  requestAction(thingId: string, actionId: string, actionName: string, input: Any): Promise<void> {
+  requestAction (thingId: string, actionId: string, actionName: string, input: Any): Promise<void> {
     const device = this.getDevice(thingId);
     if (device) {
       return device.requestAction(actionId, actionName, input);
@@ -460,7 +460,7 @@ export class AddonManager extends EventEmitter {
    * @method removeAction
    * @returns a promise which resolves when the action has been removed.
    */
-  removeAction(thingId: string, actionId: string, actionName: string): Promise<void> {
+  removeAction (thingId: string, actionId: string, actionName: string): Promise<void> {
     const device = this.getDevice(thingId);
     if (device) {
       return device.removeAction(actionId, actionName);
@@ -474,7 +474,7 @@ export class AddonManager extends EventEmitter {
    *
    * Called when the indicated device has been added to an adapter.
    */
-  handleDeviceAdded(device: Device): void {
+  handleDeviceAdded (device: Device): void {
     this.devices[device.getId()] = device;
     const thing = device.asThing();
 
@@ -493,7 +493,7 @@ export class AddonManager extends EventEmitter {
    * @method handleDeviceRemoved
    * Called when the indicated device has been removed by an adapter.
    */
-  handleDeviceRemoved(device: Device): void {
+  handleDeviceRemoved (device: Device): void {
     delete this.devices[device.getId()];
     const thing = device.asThing();
 
@@ -525,7 +525,7 @@ export class AddonManager extends EventEmitter {
    *
    * Called when the indicated outlet has been added to a notifier.
    */
-  handleOutletAdded(outlet: Outlet): void {
+  handleOutletAdded (outlet: Outlet): void {
     this.outlets[outlet.getId()] = outlet;
 
     /**
@@ -543,7 +543,7 @@ export class AddonManager extends EventEmitter {
    * @method handleOutletRemoved
    * Called when the indicated outlet has been removed by a notifier.
    */
-  handleOutletRemoved(outlet: Outlet): void {
+  handleOutletRemoved (outlet: Outlet): void {
     delete this.outlets[outlet.getId()];
 
     /**
@@ -565,7 +565,7 @@ export class AddonManager extends EventEmitter {
    * @param {string} packageId The package ID of the add-on
    * @returns {boolean} Boolean indicating enabled status.
    */
-  async addonEnabled(packageId: string): Promise<boolean> {
+  async addonEnabled (packageId: string): Promise<boolean> {
     if (this.installedAddons.has(packageId)) {
       return <boolean>this.installedAddons.get(packageId)!.enabled;
     }
@@ -573,7 +573,7 @@ export class AddonManager extends EventEmitter {
     return false;
   }
 
-  async enableAddon(packageId: string): Promise<void> {
+  async enableAddon (packageId: string): Promise<void> {
     if (!this.installedAddons.has(packageId)) {
       throw new Error('Package not installed.');
     }
@@ -584,7 +584,7 @@ export class AddonManager extends EventEmitter {
     await this.loadAddon(packageId);
   }
 
-  async disableAddon(packageId: string, wait = false): Promise<void> {
+  async disableAddon (packageId: string, wait = false): Promise<void> {
     if (!this.installedAddons.has(packageId)) {
       throw new Error('Package not installed.');
     }
@@ -603,7 +603,7 @@ export class AddonManager extends EventEmitter {
    * @param {String} packageId The package ID of the add-on to load.
    * @returns A promise which is resolved when the add-on is loaded.
    */
-  async loadAddon(packageId: string): Promise<void> {
+  async loadAddon (packageId: string): Promise<void> {
     const addonPath = path.join(UserProfile.addonsDir, packageId);
 
     // Let errors from loading the manifest bubble up.
@@ -685,7 +685,7 @@ export class AddonManager extends EventEmitter {
    * @method loadAddons
    * Loads all of the configured add-ons from the addons directory.
    */
-  loadAddons(): void {
+  loadAddons (): void {
     if (this.addonsLoaded) {
       // This is kind of a hack, but it allows the gateway to restart properly
       // when switching between http and https modes.
@@ -742,7 +742,7 @@ export class AddonManager extends EventEmitter {
    *
    * @returns A promise that resolves to the device which was actually removed.
    */
-  removeThing(thingId: string): Promise<string> {
+  removeThing (thingId: string): Promise<string> {
     /* eslint-disable @typescript-eslint/indent */
     const deferredRemove: Deferred<string, unknown> & { adapter?: Adapter } = new Deferred<
       string,
@@ -772,15 +772,15 @@ export class AddonManager extends EventEmitter {
     return deferredRemove.getPromise();
   }
 
-  removeAdapter(id: string): void {
+  removeAdapter (id: string): void {
     this.adapters.delete(id);
   }
 
-  removeNotifier(id: string): void {
+  removeNotifier (id: string): void {
     this.notifiers.delete(id);
   }
 
-  removeApiHandler(id: string): void {
+  removeApiHandler (id: string): void {
     this.apiHandlers.delete(id);
   }
 
@@ -791,7 +791,7 @@ export class AddonManager extends EventEmitter {
    * @returns a promise which is resolved when all of the add-ons
    *          are unloaded.
    */
-  unloadAddons(): Promise<void> {
+  unloadAddons (): Promise<void> {
     if (!this.addonsLoaded) {
       // The add-ons are not currently loaded, no need to unload.
       return Promise.resolve();
@@ -839,7 +839,7 @@ export class AddonManager extends EventEmitter {
    * @param {String} id The ID of the adapter to unload.
    * @returns A promise which is resolved when the adapter is unloaded.
    */
-  unloadAdapter(id: string): Promise<void> {
+  unloadAdapter (id: string): Promise<void> {
     if (!this.addonsLoaded) {
       // The add-ons are not currently loaded, no need to unload.
       return Promise.resolve();
@@ -863,7 +863,7 @@ export class AddonManager extends EventEmitter {
    * @param {String} id The ID of the notifier to unload.
    * @returns A promise which is resolved when the notifier is unloaded.
    */
-  unloadNotifier(id: string): Promise<void> {
+  unloadNotifier (id: string): Promise<void> {
     if (!this.addonsLoaded) {
       // The add-ons are not currently loaded, no need to unload.
       return Promise.resolve();
@@ -887,7 +887,7 @@ export class AddonManager extends EventEmitter {
    * @param {string} packageId The ID of the package the handler belongs to.
    * @returns A promise which is resolved when the handler is unloaded.
    */
-  unloadAPIHandler(packageId: string): Promise<void> {
+  unloadAPIHandler (packageId: string): Promise<void> {
     if (!this.addonsLoaded) {
       // The add-ons are not currently loaded, no need to unload.
       return Promise.resolve();
@@ -912,7 +912,7 @@ export class AddonManager extends EventEmitter {
    * @param {Boolean} wait Whether or not to wait for unloading to finish
    * @returns A promise which is resolved when the add-on is unloaded.
    */
-  unloadAddon(packageId: string, wait: boolean): Promise<void> {
+  unloadAddon (packageId: string, wait: boolean): Promise<void> {
     if (!this.addonsLoaded) {
       // The add-ons are not currently loaded, no need to unload.
       return Promise.resolve();
@@ -961,7 +961,7 @@ export class AddonManager extends EventEmitter {
    * @returns Boolean indicating whether or not the package is installed
    *          on the system.
    */
-  isAddonInstalled(packageId: string): boolean {
+  isAddonInstalled (packageId: string): boolean {
     return this.installedAddons.has(packageId);
   }
 
@@ -975,7 +975,7 @@ export class AddonManager extends EventEmitter {
    * @param {object} options Set of options, primarily used by external scripts
    * @returns A Promise that resolves when the add-on is installed.
    */
-  async installAddonFromUrl(
+  async installAddonFromUrl (
     id: string,
     url: string,
     checksum: string,
@@ -1042,7 +1042,7 @@ export class AddonManager extends EventEmitter {
    * @param {object} options Set of options, primarily used by external scripts
    * @returns A promise that resolves when the package is installed.
    */
-  async installAddon(
+  async installAddon (
     packageId: string,
     packagePath: string,
     enable: boolean,
@@ -1128,7 +1128,7 @@ export class AddonManager extends EventEmitter {
    * @param {Boolean} disable Whether or not to disable the add-on
    * @returns A promise that resolves when the package is uninstalled.
    */
-  async uninstallAddon(packageId: string, wait: boolean, disable: boolean): Promise<void> {
+  async uninstallAddon (packageId: string, wait: boolean, disable: boolean): Promise<void> {
     try {
       // Try to gracefully unload
       await this.unloadAddon(packageId, wait);
@@ -1180,7 +1180,7 @@ export class AddonManager extends EventEmitter {
    * This function is really only used to support testing and
    * ensure that tests don't proceed until
    */
-  waitForAdapter(adapterId: string): Promise<Adapter> {
+  waitForAdapter (adapterId: string): Promise<Adapter> {
     const adapter = this.getAdapter(adapterId);
     if (adapter) {
       // The adapter already exists, just create a Promise
@@ -1206,7 +1206,7 @@ export class AddonManager extends EventEmitter {
    * @param {object} options Set of options, primarily used by external scripts
    * @returns A promise which is resolved when updating is complete.
    */
-  async updateAddons(options: { forceUpdateBinary?: boolean } = {}): Promise<void> {
+  async updateAddons (options: { forceUpdateBinary?: boolean } = {}): Promise<void> {
     const urls: string[] = config.get('addonManager.listUrls');
     const architecture = Platform.getArchitecture();
     const version = pkg.version;
@@ -1359,11 +1359,11 @@ export class AddonManager extends EventEmitter {
     });
   }
 
-  getInstalledAddons(): Map<string, Record<string, unknown>> {
+  getInstalledAddons (): Map<string, Record<string, unknown>> {
     return this.installedAddons;
   }
 
-  getPluginServer(): PluginServer | null {
+  getPluginServer (): PluginServer | null {
     return this.pluginServer;
   }
 }

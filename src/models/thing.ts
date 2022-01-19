@@ -54,7 +54,9 @@ export interface ThingDescription {
   security: string;
   securityDefinitions: SecurityDefinition;
   group_id: string | null;
+  metadata: Object;
 }
+
 
 interface IconData {
   data: string;
@@ -113,6 +115,8 @@ export default class Thing extends EventEmitter {
   private iconHref: string | null;
 
   private group_id: string | null;
+
+  private metadata: Object;
 
   /**
    * Thing constructor.
@@ -304,37 +308,42 @@ export default class Thing extends EventEmitter {
     }
 
     this.group_id = description.group_id || null;
+    this.metadata = description.metadata || null;
   }
 
-  getId(): string {
+  getId (): string {
     return this.id;
   }
 
-  getTitle(): string {
+  getTitle (): string {
     return this.title;
   }
 
-  getLayoutIndex(): number {
+  getLayoutIndex (): number {
     return this.layoutIndex;
   }
 
-  getGroup(): string | null {
+  getGroup (): string | null {
     return this.group_id;
   }
 
-  getHref(): string {
+  getMetadata (): Object {
+    return this.metadata;
+  }
+
+  getHref (): string {
     return this.href;
   }
 
-  getProperties(): Record<string, PropertySchema> {
+  getProperties (): Record<string, PropertySchema> {
     return this.properties;
   }
 
-  getActions(): Record<string, ActionSchema> {
+  getActions (): Record<string, ActionSchema> {
     return this.actions;
   }
 
-  getEvents(): Record<string, EventSchema> {
+  getEvents (): Record<string, EventSchema> {
     return this.events;
   }
 
@@ -344,7 +353,7 @@ export default class Thing extends EventEmitter {
    * @param {boolean} visibility Whether or not to include in the floorplan view.
    * @return {Promise} A promise which resolves with the description set.
    */
-  setFloorplanVisibility(visibility: boolean): Promise<ThingDescription> {
+  setFloorplanVisibility (visibility: boolean): Promise<ThingDescription> {
     this.floorplanVisibility = visibility;
     return Database.updateThing(this.id, this.getDescription()).then((descr) => {
       this.emit(Constants.MODIFIED);
@@ -359,7 +368,7 @@ export default class Thing extends EventEmitter {
    * @param {number} y The y co-ordinate on floorplan (0-100).
    * @return {Promise} A promise which resolves with the description set.
    */
-  setCoordinates(x: number, y: number): Promise<ThingDescription> {
+  setCoordinates (x: number, y: number): Promise<ThingDescription> {
     this.floorplanX = x;
     this.floorplanY = y;
     return Database.updateThing(this.id, this.getDescription()).then((descr) => {
@@ -374,7 +383,7 @@ export default class Thing extends EventEmitter {
    * @param {number} index The new layout index.
    * @return {Promise} A promise which resolves with the description set.
    */
-  setLayoutIndex(index: number): Promise<ThingDescription> {
+  setLayoutIndex (index: number): Promise<ThingDescription> {
     this.layoutIndex = index;
     return Database.updateThing(this.id, this.getDescription()).then((descr) => {
       return descr;
@@ -387,7 +396,7 @@ export default class Thing extends EventEmitter {
    * @param {String} title The new title
    * @return {Promise} A promise which resolves with the description set.
    */
-  setTitle(title: string): Promise<ThingDescription> {
+  setTitle (title: string): Promise<ThingDescription> {
     this.title = title;
     return Database.updateThing(this.id, this.getDescription()).then((descr) => {
       this.emit(Constants.MODIFIED);
@@ -402,7 +411,7 @@ export default class Thing extends EventEmitter {
    * @param {Boolean} updateDatabase Whether or not to update the database after
    *                                 setting.
    */
-  setIcon(iconData: IconData, updateDatabase: boolean): Promise<ThingDescription> {
+  setIcon (iconData: IconData, updateDatabase: boolean): Promise<ThingDescription> {
     if (!iconData.data || !['image/jpeg', 'image/png', 'image/svg+xml'].includes(iconData.mime)) {
       console.error('Invalid icon data:', iconData);
       throw new Error('Invalid icon data');
@@ -475,7 +484,7 @@ export default class Thing extends EventEmitter {
    * @param {String} capability The selected capability
    * @return {Promise} A promise which resolves with the description set.
    */
-  setSelectedCapability(capability: string): Promise<ThingDescription> {
+  setSelectedCapability (capability: string): Promise<ThingDescription> {
     this.selectedCapability = capability;
     return Database.updateThing(this.id, this.getDescription()).then((descr) => {
       this.emit(Constants.MODIFIED);
@@ -489,8 +498,21 @@ export default class Thing extends EventEmitter {
    * @param {string} group_id ID of the group
    * @return {Promise} A promise which resolves with the description set.
    */
-  setGroup(group_id: string | null): Promise<ThingDescription> {
+  setGroup (group_id: string | null): Promise<ThingDescription> {
     this.group_id = group_id;
+    return Database.updateThing(this.id, this.getDescription()).then((descr) => {
+      return descr;
+    });
+  }
+
+  /**
+   * Set the metadata for a Thing in the overview.
+   *
+   * @param {string} metadata for the thing
+   * @return {Promise} A promise which resolves with the description set.
+   */
+  setMetadata (metadata: Object): Promise<ThingDescription> {
+    this.metadata = metadata;
     return Database.updateThing(this.id, this.getDescription()).then((descr) => {
       return descr;
     });
@@ -500,7 +522,7 @@ export default class Thing extends EventEmitter {
    * Dispatch an event to all listeners subscribed to the Thing
    * @param {Event} event
    */
-  dispatchEvent(event: Event): void {
+  dispatchEvent (event: Event): void {
     if (!event.getThingId()) {
       event.setThingId(this.id);
     }
@@ -512,7 +534,7 @@ export default class Thing extends EventEmitter {
    * Add a subscription to the Thing's events
    * @param {Function} callback
    */
-  addEventSubscription(callback: (arg: Event) => void): void {
+  addEventSubscription (callback: (arg: Event) => void): void {
     this.on(Constants.EVENT, callback);
   }
 
@@ -520,7 +542,7 @@ export default class Thing extends EventEmitter {
    * Remove a subscription to the Thing's events
    * @param {Function} callback
    */
-  removeEventSubscription(callback: (arg: Event) => void): void {
+  removeEventSubscription (callback: (arg: Event) => void): void {
     this.removeListener(Constants.EVENT, callback);
   }
 
@@ -528,7 +550,7 @@ export default class Thing extends EventEmitter {
    * Add a subscription to the Thing's connected state
    * @param {Function} callback
    */
-  addConnectedSubscription(callback: (connected: boolean) => void): void {
+  addConnectedSubscription (callback: (connected: boolean) => void): void {
     this.on(Constants.CONNECTED, callback);
     callback(this.connected);
   }
@@ -537,7 +559,7 @@ export default class Thing extends EventEmitter {
    * Remove a subscription to the Thing's connected state
    * @param {Function} callback
    */
-  removeConnectedSubscription(callback: (connected: boolean) => void): void {
+  removeConnectedSubscription (callback: (connected: boolean) => void): void {
     this.removeListener(Constants.CONNECTED, callback);
   }
 
@@ -545,7 +567,7 @@ export default class Thing extends EventEmitter {
    * Add a subscription to the Thing's modified state
    * @param {Function} callback
    */
-  addModifiedSubscription(callback: () => void): void {
+  addModifiedSubscription (callback: () => void): void {
     this.on(Constants.MODIFIED, callback);
   }
 
@@ -553,7 +575,7 @@ export default class Thing extends EventEmitter {
    * Remove a subscription to the Thing's modified state
    * @param {Function} callback
    */
-  removeModifiedSubscription(callback: () => void): void {
+  removeModifiedSubscription (callback: () => void): void {
     this.removeListener(Constants.MODIFIED, callback);
   }
 
@@ -561,7 +583,7 @@ export default class Thing extends EventEmitter {
    * Add a subscription to the Thing's removed state
    * @param {Function} callback
    */
-  addRemovedSubscription(callback: (arg: boolean) => void): void {
+  addRemovedSubscription (callback: (arg: boolean) => void): void {
     this.on(Constants.REMOVED, callback);
   }
 
@@ -569,7 +591,7 @@ export default class Thing extends EventEmitter {
    * Remove a subscription to the Thing's removed state
    * @param {Function} callback
    */
-  removeRemovedSubscription(callback: (arg: boolean) => void): void {
+  removeRemovedSubscription (callback: (arg: boolean) => void): void {
     this.removeListener(Constants.REMOVED, callback);
   }
 
@@ -579,7 +601,7 @@ export default class Thing extends EventEmitter {
    * @param {String} reqHost request host, if coming via HTTP
    * @param {Boolean} reqSecure whether or not the request is secure, i.e. TLS
    */
-  getDescription(reqHost?: string, reqSecure?: boolean): ThingDescription {
+  getDescription (reqHost?: string, reqSecure?: boolean): ThingDescription {
     const desc: ThingDescription = {
       title: this.title,
       '@context': this['@context'],
@@ -598,6 +620,7 @@ export default class Thing extends EventEmitter {
       selectedCapability: this.selectedCapability,
       iconHref: this.iconHref,
       group_id: this.group_id,
+      metadata: this.metadata,
     } as ThingDescription;
 
     if (typeof reqHost !== 'undefined') {
@@ -614,9 +637,8 @@ export default class Thing extends EventEmitter {
         oauth2_sc: {
           scheme: 'oauth2',
           flow: 'code',
-          authorization: `${reqSecure ? 'https' : 'http'}://${reqHost}${
-            Constants.OAUTH_PATH
-          }/authorize`,
+          authorization: `${reqSecure ? 'https' : 'http'}://${reqHost}${Constants.OAUTH_PATH
+            }/authorize`,
           token: `${reqSecure ? 'https' : 'http'}://${reqHost}${Constants.OAUTH_PATH}/token`,
           scopes: [
             `${this.href}:readwrite`,
@@ -635,7 +657,7 @@ export default class Thing extends EventEmitter {
   /**
    * Remove and clean up the Thing
    */
-  remove(): void {
+  remove (): void {
     if (this.iconHref) {
       try {
         fs.unlinkSync(path.join(UserProfile.baseDir, this.iconHref));
@@ -655,7 +677,7 @@ export default class Thing extends EventEmitter {
    * @param {Action} action
    * @return {boolean} Whether a known action
    */
-  addAction(action: Action): boolean {
+  addAction (action: Action): boolean {
     return this.actions.hasOwnProperty(action.getName());
   }
 
@@ -664,7 +686,7 @@ export default class Thing extends EventEmitter {
    * @param {Action} action
    * @return {boolean} Whether a known action
    */
-  removeAction(action: Action): boolean {
+  removeAction (action: Action): boolean {
     return this.actions.hasOwnProperty(action.getName());
   }
 
@@ -677,7 +699,7 @@ export default class Thing extends EventEmitter {
    * @param {Object} description Thing description.
    * @return {Promise} A promise which resolves with the description set.
    */
-  updateFromDescription(description: ThingDescription, router: Router): Promise<ThingDescription> {
+  updateFromDescription (description: ThingDescription, router: Router): Promise<ThingDescription> {
     const oldDescription = JSON.stringify(this.getDescription());
 
     // Update @context
@@ -866,7 +888,7 @@ export default class Thing extends EventEmitter {
    *
    * @param {boolean} connected - Whether or not the thing is connected
    */
-  setConnected(connected: boolean): void {
+  setConnected (connected: boolean): void {
     this.connected = connected;
     this.emit(Constants.CONNECTED, connected);
   }
